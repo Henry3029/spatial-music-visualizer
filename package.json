@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "iwsdk dev restart --open --foreground",
+"scripts": {
+    "dev": "vite --host 0.0.0.0 --port 8081",
     "dev:runtime": "vite --host 0.0.0.0 --port 8081",
     "dev:down": "iwsdk dev down",
     "dev:status": "iwsdk dev status",
