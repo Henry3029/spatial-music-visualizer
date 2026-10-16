@@ -1,19 +1,57 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+import { 
+  World, 
+  SessionMode, 
+  BoxGeometry, 
+  Mesh, 
+  MeshStandardMaterial, 
+  RayInteractable, 
+  OneHandGrabbable 
+} from '@iwsdk/core';
 
-import { World } from '@iwsdk/core';
-import projectOptions from 'virtual:iwsdk-project';
-import { PanelSystem } from './panel.js';
-import { RobotSystem } from './robot.js';
+// Initialize the IWSDK World container
+World.create(document.getElementById('scene-container')!, {
+  xr: {
+    sessionMode: SessionMode.ImmersiveVR,
+    features: {
+      handTracking: true,
+    },
+  },
+  features: {
+    grabbing: {
+      useHandPinchForGrab: true,
+    },
+    locomotion: false, // Seated-optimized: no locomotion needed
+  },
+  input: {
+    canvasPointerEvents: true,
+  },
+}).then((world) => {
+  console.log("Spatial Music Visualizer initialized successfully!");
 
-World.create(
-  document.getElementById('scene-container') as HTMLDivElement,
-  projectOptions,
-).then((world) => {
-  world.registerSystem(RobotSystem);
-  world.registerSystem(PanelSystem);
+  // 1. Create an audio-reactive core object floating in front of the user (Seated 2-foot radius)
+  const visualizerCoreGeometry = new BoxGeometry(0.3, 0.3, 0.3);
+  const visualizerCoreMaterial = new MeshStandardMaterial({ 
+    color: 0x00ffcc, 
+    emissive: 0x004444,
+    roughness: 0.2 
+  });
+  
+  const coreMesh = new Mesh(visualizerCoreGeometry, visualizerCoreMaterial);
+  coreMesh.position.set(0, 1.2, -0.6); // Placed right at eye-level within comfortable reach
+
+  // 2. Register it as an ECS entity with interaction & grab capabilities
+  world.createTransformEntity(coreMesh)
+    .addComponent(RayInteractable)
+    .addComponent(OneHandGrabbable, {
+      translate: true,
+      rotate: true,
+    });
+
+  // 3. Add a simple pulse animation loop simulating audio reactivity
+  let time = 0;
+  world.onUpdate((delta) => {
+    time += delta * 3;
+    const scale = 1 + Math.sin(time) * 0.15;
+    coreMesh.scale.set(scale, scale, scale);
+  });
 });
