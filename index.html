@@ -7,10 +7,27 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <link rel="icon" href="data:," />
-    <title>spatail-music-visualizer</title>
+    <title>Spatial Music Visualizer</title>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #000000; /* Ensures a clean dark backdrop for your visualizer */
+      }
+      #scene-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+    </style>
   </head>
-  <body style="margin: 0">
-    <div id="scene-container" style="width: 100vw; height: 100vh; overflow: hidden;"></div>
+  <body>
+    <div id="scene-container"></div>
     <script type="module" src="/src/index.ts"></script>
   </body>
 </html>
