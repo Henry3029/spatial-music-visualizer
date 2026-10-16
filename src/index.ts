@@ -47,10 +47,13 @@ World.create(document.getElementById('scene-container')!, {
       rotate: true,
     });
 
-  // 3. Add a simple pulse animation loop simulating audio reactivity
+// 3. Add a simple pulse animation loop simulating audio reactivity
   let time = 0;
-  world.onUpdate((delta) => {
-    time += delta * 3;
+  
+  // Use Three.js / animation loop frame listener or entity component update
+  world.renderer.setAnimationLoop((timestamp, frame) => {
+    // Delta time calculation or fixed increment
+    time += 0.016 * 3; // roughly 60fps delta
     const scale = 1 + Math.sin(time) * 0.15;
     coreMesh.scale.set(scale, scale, scale);
   });
