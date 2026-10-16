@@ -38,6 +38,8 @@ World.create(document.getElementById('scene-container')!, {
   
   const coreMesh = new Mesh(visualizerCoreGeometry, visualizerCoreMaterial);
   coreMesh.position.set(0, 1.2, -0.6); // Placed right at eye-level within comfortable reach
+  
+  world.scene.add(coreMesh);
 
   // 2. Register it as an ECS entity with interaction & grab capabilities
   world.createTransformEntity(coreMesh)
