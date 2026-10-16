@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
 "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 8081",
-    "dev:runtime": "vite --host 0.0.0.0 --port 8081",
+    "dev": "iwsdk dev restart --open --foreground",
+    "dev:runtime": "vite",
     "dev:down": "iwsdk dev down",
     "dev:status": "iwsdk dev status",
     "reference:status": "iwsdk reference status",
