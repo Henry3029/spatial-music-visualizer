@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@iwsdk/core/dist/schemas/iwsdk-project.v1.schema.json",
   "version": "iwsdk.project.v1",
-  "scene": "/scenes/main.iwsdk.scene.json",
+  "scene": "./scenes/main.iwsdk.scene.json",
   "assets": {
     "module": "./src/assets"
   },
