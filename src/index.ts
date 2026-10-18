@@ -1,20 +1,18 @@
+import { World, RayInteractable, OneHandGrabbable } from '@iwsdk/core';
 import { 
-  World, 
   BoxGeometry, 
   Mesh, 
   MeshStandardMaterial, 
-  RayInteractable, 
-  OneHandGrabbable,
-  AmbientLight,
-  DirectionalLight
-} from '@iwsdk/core';
+  AmbientLight, 
+  DirectionalLight 
+} from 'three';
 import projectOptions from 'virtual:iwsdk-project';
 
 // Initialize the IWSDK World container
 World.create(document.getElementById('scene-container')!, projectOptions).then((world) => {
   console.log("Spatial Music Visualizer initialized successfully!");
 
-  // 1. Add scene lighting so materials render brightly against the gradient background
+  // 1. Add scene lighting using standard Three.js classes
   const ambientLight = new AmbientLight(0xffffff, 1.2);
   world.scene.add(ambientLight);
 
