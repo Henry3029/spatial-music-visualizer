@@ -21,8 +21,8 @@ export class VisualizerSystem extends createSystem({
       });
       const mesh = new Mesh(geometry, material);
 
-      // Attach mesh to the entity's transform
-      entity.Object3D(mesh);
+      // Attach mesh directly to the entity's object3D property
+      entity.object3D = mesh;
       entity.object3D.position.set(0, 1.3, -1.5);
 
       // Add interaction components programmatically
