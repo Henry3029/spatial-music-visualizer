@@ -12,9 +12,11 @@ export class VisualizerSystem extends createSystem({
 
   init(): void {
     this.queries.cores.entities.forEach((entity) => {
-      // 1. Attach the Root Container to the ECS entity (This is what gets grabbed)
+      // 1. Attach the Root Container to the entity and lock its position firmly in space
       entity.object3D = this.rootGroup;
-      entity.object3D.position.set(0, 1.3, -1.8);
+      entity.object3D.position.set(0, 1.3, -2.0);
+
+      // (Notice we removed OneHandGrabbable and RayInteractable entirely so it can't fly away)
 
       // 2. Nest the animated visualizer matrix inside the root container
       this.rootGroup.add(this.visualizerGroup);
