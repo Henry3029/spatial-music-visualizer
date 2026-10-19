@@ -1,4 +1,4 @@
-import { createSystem, RayInteractable, OneHandGrabbable } from '@iwsdk/core';
+import { createSystem } from '@iwsdk/core';
 import { BoxGeometry, Mesh, MeshStandardMaterial, Group } from 'three';
 import { VisualizerCore } from '../components/visualizer-component.js';
 
@@ -15,13 +15,6 @@ export class VisualizerSystem extends createSystem({
       // 1. Attach the Root Container to the ECS entity (This is what gets grabbed)
       entity.object3D = this.rootGroup;
       entity.object3D.position.set(0, 1.3, -1.8);
-
-      // Add interaction components safely to the root
-      entity.addComponent(RayInteractable);
-      entity.addComponent(OneHandGrabbable, {
-        translate: true,
-        rotate: true,
-      });
 
       // 2. Nest the animated visualizer matrix inside the root container
       this.rootGroup.add(this.visualizerGroup);
