@@ -11,11 +11,12 @@ export class VisualizerSystem extends createSystem({
 
   init(): void {
     this.queries.cores.entities.forEach((entity) => {
-      // 1. Get the existing object3D provided automatically by the scene JSON
       const parentObject = entity.object3D;
       if (!parentObject) return;
 
-      // 2. Create your animation group and ADD it as a child (DO NOT OVERWRITE object3D)
+      // Force lock starting position safely
+      parentObject.position.set(0, 1.3, -1.5);
+
       const visualizerGroup = new Group();
       parentObject.add(visualizerGroup);
 
@@ -41,7 +42,7 @@ export class VisualizerSystem extends createSystem({
         bars.push(bar);
       }
 
-      // Add glowing center core
+      // Center glowing core
       const coreGeo = new BoxGeometry(0.25, 0.25, 0.25);
       const coreMat = new MeshStandardMaterial({
         color: 0xff0055,
@@ -53,33 +54,36 @@ export class VisualizerSystem extends createSystem({
       visualizerGroup.add(centerCore);
       bars.push(centerCore);
 
-      // Store references for the update loop
       this.visualizerGroups.set(entity, visualizerGroup);
       this.barsMap.set(entity, bars);
     });
   }
 
   update(delta: number): void {
-    this.time += delta * 2.5;
+    // 1. Sanitize delta: Default to 0.016 (60fps) if delta is missing or NaN
+    const safeDelta = (typeof delta === 'number' && !isNaN(delta)) ? Math.min(delta, 0.1) : 0.016;
+    
+    // 2. Safely increment time with strict NaN protection
+    this.time = (isNaN(this.time) ? 0 : this.time) + (safeDelta * 2.5);
 
     this.queries.cores.entities.forEach((entity) => {
       const visualizerGroup = this.visualizerGroups.get(entity);
       const bars = this.barsMap.get(entity);
 
-      // Rotate the inner group safely
       if (visualizerGroup) {
         visualizerGroup.rotation.y += 0.005;
       }
 
-      // Animate the pulsing bars
       if (bars) {
         bars.forEach((bar, index) => {
           if (index < bars.length - 1) {
             const wave = Math.sin(this.time + index * 0.7) * 0.4 + 0.6;
-            bar.scale.y = Math.max(0.2, wave * 2);
+            const safeScale = isNaN(wave) ? 1 : Math.max(0.2, wave * 2);
+            bar.scale.set(1, safeScale, 1);
           } else {
             const pulse = 1 + Math.sin(this.time * 2) * 0.2;
-            bar.scale.set(pulse, pulse, pulse);
+            const safePulse = isNaN(pulse) ? 1 : Math.max(0.2, pulse);
+            bar.scale.set(safePulse, safePulse, safePulse);
           }
         });
       }
