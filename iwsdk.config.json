@@ -39,7 +39,7 @@
       "locomotion": {
         "useWorker": true
       },
-      "grabbing": true,
+      "grabbing": false,
       "physics": false,
       "sceneUnderstanding": false,
       "environmentRaycast": false,
