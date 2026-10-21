@@ -6,7 +6,7 @@
     "module": "./src/assets"
   },
   "components": {
-    "module": "./src/components/index.ts"
+    "module": "./src/components/index"
   },
   "world": {
     "xr": {
