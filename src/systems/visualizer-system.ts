@@ -28,7 +28,7 @@ export class VisualizerSystem extends createSystem({
     if (!parentObject || this.visualizerGroups.has(entity)) return;
 
     // Ensure it stays locked safely in world/local space
-    parentObject.position.set(0, 1.3, -1.5);
+//    parentObject.position.set(0, 1.3, -1.5);
 
     const visualizerGroup = new Group();
     parentObject.add(visualizerGroup);
@@ -80,8 +80,7 @@ export class VisualizerSystem extends createSystem({
     }
   }
 
-    update(delta: number): void {
-    // We can keep the time tracker if needed, but skip updating the animations
+      update(delta: number): void {
     const safeDelta = (typeof delta === 'number' && !isNaN(delta)) ? Math.min(delta, 0.1) : 0.016;
     this.time = (isNaN(this.time) ? 0 : this.time) + (safeDelta * 2.5);
 
@@ -89,20 +88,20 @@ export class VisualizerSystem extends createSystem({
       const visualizerGroup = this.visualizerGroups.get(entity);
       const bars = this.barsMap.get(entity);
 
-      // 1. STABILIZE ROTATION: Commented out so the group stays completely still
       if (visualizerGroup) {
-        // visualizerGroup.rotation.y += 0.005; 
+        visualizerGroup.rotation.y += 0.005;
       }
 
-      // 2. STABILIZE BARS & CORE: Locked to a clean, default scale of 1
       if (bars) {
         bars.forEach((bar, index) => {
           if (index < bars.length - 1) {
-            // Lock standard bars to a flat, stable height
-            bar.scale.set(1, 1, 1);
+            const wave = Math.sin(this.time + index * 0.7) * 0.4 + 0.6;
+            const safeScale = isNaN(wave) ? 1 : Math.max(0.2, wave * 2);
+            bar.scale.set(1, safeScale, 1);
           } else {
-            // Lock the center core to a stable size
-            bar.scale.set(1, 1, 1);
+            const pulse = 1 + Math.sin(this.time * 2) * 0.2;
+            const safePulse = isNaN(pulse) ? 1 : Math.max(0.2, pulse);
+            bar.scale.set(safePulse, safePulse, safePulse);
           }
         });
       }
