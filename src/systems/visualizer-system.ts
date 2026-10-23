@@ -28,7 +28,7 @@ export class VisualizerSystem extends createSystem({
     if (!parentObject || this.visualizerGroups.has(entity)) return;
 
     // Ensure it stays locked safely in world/local space
-    parentObject.position.set(0, 1.3, -1.5);
+   // parentObject.position.set(0, 1.3, -1.5);
 
     const visualizerGroup = new Group();
     parentObject.add(visualizerGroup);
