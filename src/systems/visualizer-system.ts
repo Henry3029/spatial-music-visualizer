@@ -8,14 +8,14 @@ export class VisualizerSystem extends createSystem({
   private visualizerGroups = new Map<Entity, Group>();
   private barsMap = new Map<Entity, Mesh[]>();
   private time = 0;
+  private frameCount = 0; // Track frames to let XR tracking stabilize
 
   init(): void {
-    // Safely subscribe using the official IWSDK ECS pattern from AGENTS.md
     this.cleanupFuncs.push(
       this.queries.cores.subscribe(
         'qualify',
         (entity) => this.setupVisualizer(entity),
-        true, // true means catch up on entities already in the scene
+        true,
       ),
       this.queries.cores.subscribe('disqualify', (entity) =>
         this.cleanupVisualizer(entity),
@@ -27,8 +27,8 @@ export class VisualizerSystem extends createSystem({
     const parentObject = entity.object3D;
     if (!parentObject || this.visualizerGroups.has(entity)) return;
 
-    // Ensure it stays locked safely in world/local space
-   // parentObject.position.set(0, 1.3, -1.5);
+    // Start invisible or at origin so it doesn't snap violently on frame 1
+    parentObject.visible = false; 
 
     const visualizerGroup = new Group();
     parentObject.add(visualizerGroup);
@@ -55,7 +55,6 @@ export class VisualizerSystem extends createSystem({
       bars.push(bar);
     }
 
-    // Center glowing core
     const coreGeo = new BoxGeometry(0.25, 0.25, 0.25);
     const coreMat = new MeshStandardMaterial({
       color: 0xff0055,
@@ -80,13 +79,21 @@ export class VisualizerSystem extends createSystem({
     }
   }
 
-      update(delta: number): void {
+  update(delta: number): void {
+    this.frameCount++;
     const safeDelta = (typeof delta === 'number' && !isNaN(delta)) ? Math.min(delta, 0.1) : 0.016;
     this.time = (isNaN(this.time) ? 0 : this.time) + (safeDelta * 2.5);
 
     for (const entity of this.queries.cores.entities) {
+      const parentObject = entity.object3D;
       const visualizerGroup = this.visualizerGroups.get(entity);
       const bars = this.barsMap.get(entity);
+
+      // Once tracking has had ~15 frames to stabilize, safely position and reveal it
+      if (parentObject && this.frameCount === 15) {
+        parentObject.position.set(0, 1.3, -1.5);
+        parentObject.visible = true;
+      }
 
       if (visualizerGroup) {
         visualizerGroup.rotation.y += 0.005;
